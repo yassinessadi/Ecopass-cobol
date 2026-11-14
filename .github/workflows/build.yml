@@ -1,0 +1,53 @@
+
+name: EcoPass Scala Build
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Compile, Test and Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+
+      - name: Set up SBT
+        uses: sbt/setup-sbt@v1
+
+      - name: Show Java and SBT versions
+        run: |
+          java -version
+          sbt --version
+
+      - name: Run tests
+        run: sbt clean test
+
+      - name: Compile project
+        run: sbt compile
+
+      - name: Package EcoPass JAR
+        run: sbt package
+
+      - name: Upload EcoPass JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecopass-jar
+          path: target/scala-2.12/*.jar
+          if-no-files-found: error
+          retention-days: 30
