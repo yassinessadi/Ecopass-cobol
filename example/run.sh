@@ -21,7 +21,7 @@ echo "=== Test JAR with spark-submit ==="
 
 "$SPARK_HOME/bin/spark-submit" \
     --master local[*] \
-    --jars "target/ecopass_2.12-0.1.0.jar" \
+    --jars "ecopass_2.12-0.1.0.jar" \
     ./example/test_reader.py
 
 echo "=== Test completed ==="

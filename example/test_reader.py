@@ -1,7 +1,7 @@
 
 from pyspark.sql import SparkSession
 
-INPUT_FILE = "example/exampe.dat"
+INPUT_FILE = "example/sample.dat"
 OUTPUT_FILE = "example/output.txt"
 
 spark = (
