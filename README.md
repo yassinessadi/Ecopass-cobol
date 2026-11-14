@@ -36,8 +36,8 @@ pyspark --jars target/scala-2.12/ecopass-record-reader_2.12-0.1.0.jar
 Then:
 
 ```python
-reader = spark._jvm.za.co.absa.ecopass.RecordHeaderReader(2, 2, True)
-records = reader.readRecords("/path/to/input.dat")
+reader = spark._jvm.io.github.yassinessadi.ecopass.RecordHeaderReader(2, 2, True)
+records = reader.readRecords(INPUT_FILE)
 
 for i in range(records.size()):
     record = records.get(i)
