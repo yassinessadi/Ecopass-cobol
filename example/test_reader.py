@@ -1,12 +1,7 @@
 
 from pyspark.sql import SparkSession
 
-JAR_PATH = (
-    "/home/e7/Public/cobol-parser/ecopass/"
-    "target/scala-2.12/ecopass_2.12-0.1.0.jar"
-)
-
-INPUT_FILE = "example/spddta.a00"
+INPUT_FILE = "example/exampe.dat"
 OUTPUT_FILE = "example/output.txt"
 
 spark = (
