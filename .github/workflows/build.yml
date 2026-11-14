@@ -1,20 +1,25 @@
 
-name: EcoPass Scala Build
+name: EcoPass Build and Release
 
 on:
   push:
     branches:
       - main
       - master
+    tags:
+      - 'v*'
   pull_request:
     branches:
       - main
       - master
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
-    name: Compile, Test and Package
+    name: Build, Test and Release
     runs-on: ubuntu-latest
 
     steps:
@@ -30,24 +35,25 @@ jobs:
       - name: Set up SBT
         uses: sbt/setup-sbt@v1
 
-      - name: Show Java and SBT versions
+      - name: Show versions
         run: |
           java -version
           sbt --version
 
-      - name: Run tests
-        run: sbt clean test
+      - name: Test and package EcoPass
+        run: sbt clean test package
 
-      - name: Compile project
-        run: sbt compile
-
-      - name: Package EcoPass JAR
-        run: sbt package
-
-      - name: Upload EcoPass JAR
+      - name: Upload JAR as workflow artifact
         uses: actions/upload-artifact@v4
         with:
           name: ecopass-jar
           path: target/scala-2.12/*.jar
           if-no-files-found: error
           retention-days: 30
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: target/scala-2.12/*.jar
