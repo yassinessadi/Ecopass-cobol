@@ -341,5 +341,3 @@ See the repository's `LICENSE` file.
 **EcoPass — Binary Record Processing for Apache Spark**
 
 GitHub: https://github.com/yassinessadi/Ecopass-cobol
-
-Author and maintainer: Yassine Essadi
