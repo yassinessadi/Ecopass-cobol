@@ -1,6 +1,6 @@
 
 ThisBuild / organization := "io.github.yassinessadi"
-ThisBuild / version := "0.1.0"
+ThisBuild / version := "0.2.0"
 ThisBuild / scalaVersion := "2.12.15"
 
 lazy val root = (project in file("."))
