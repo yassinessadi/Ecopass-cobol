@@ -1,11 +1,22 @@
 
 #!/usr/bin/env bash
 
-set -euo pipefail
 
-# ============================================================
-# Environment configuration local to build jar with version >
-# ============================================================
+# """
+# Script: $.py
+
+# Description:
+#     Generates a synthetic Micro Focus-style binary test file
+#     using the EcoPass 2-byte record header format.
+
+# Author:
+#     jane
+
+# Maintained by:
+#     jane
+# """
+
+set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -17,28 +28,27 @@ export PATH="$JAVA_HOME/bin:$SPARK_HOME/bin:$PATH"
 export PYSPARK_PYTHON="$PROJECT_DIR/.venv/bin/python"
 export PYSPARK_DRIVER_PYTHON="$PROJECT_DIR/.venv/bin/python"
 
-# ============================================================
-# Validate environment
-# ============================================================
-
 echo "=========================================="
 echo " EcoPass Scala Build"
 echo "=========================================="
 
-if [[ ! -d "$JAVA_HOME" ]]; then
+# Validate environment
+[[ -d "$JAVA_HOME" ]] || {
     echo "ERROR: JAVA_HOME does not exist: $JAVA_HOME"
     exit 1
-fi
+}
 
-if [[ ! -d "$SPARK_HOME" ]]; then
+[[ -d "$SPARK_HOME" ]] || {
     echo "ERROR: SPARK_HOME does not exist: $SPARK_HOME"
     exit 1
-fi
+}
 
-if ! command -v sbt >/dev/null 2>&1; then
-    echo "ERROR: sbt is not installed or not in PATH"
+command -v sbt >/dev/null 2>&1 || {
+    echo "ERROR: sbt is not installed"
     exit 1
-fi
+}
+
+cd "$PROJECT_DIR"
 
 echo ""
 echo "Java:"
@@ -52,18 +62,10 @@ echo ""
 echo "SBT:"
 sbt --version
 
-# ============================================================
-# Build
-# ============================================================
-
-cd "$PROJECT_DIR"
-
 echo ""
 echo "=========================================="
 echo " Cleaning project"
 echo "=========================================="
-
-sbt test
 
 sbt clean
 
@@ -76,6 +78,13 @@ sbt compile
 
 echo ""
 echo "=========================================="
+echo " Running tests"
+echo "=========================================="
+
+sbt test
+
+echo ""
+echo "=========================================="
 echo " Packaging JAR"
 echo "=========================================="
 
@@ -83,7 +92,31 @@ sbt package
 
 echo ""
 echo "=========================================="
-echo " Build completed successfully"
+echo " Verifying JAR"
 echo "=========================================="
 
-find target/scala-2.12 -maxdepth 1 -name "*.jar" -print
+JAR_FILE="$(find target/scala-2.12 -maxdepth 1 -name '*.jar' | head -n 1)"
+
+if [[ -z "$JAR_FILE" ]]; then
+    echo "ERROR: JAR was not generated"
+    exit 1
+fi
+
+echo "JAR: $JAR_FILE"
+
+echo ""
+echo "Checking Spark provider registration:"
+
+jar tf "$JAR_FILE" | grep \
+    'META-INF/services/org.apache.spark.sql.sources.DataSourceRegister'
+
+echo ""
+echo "Checking EcoPass DataSource class:"
+
+jar tf "$JAR_FILE" | grep \
+    'io/github/yassinessadi/ecopass/spark/EcoPassDataSource.class'
+
+echo ""
+echo "=========================================="
+echo " Build completed successfully"
+echo "=========================================="

@@ -2,6 +2,24 @@
 
 Scala conversion of the supplied Python `RecordHeader` reader.
 
+
+## usecase:
+
+```mermaid
+flowchart TD
+    A[New file arrives] --> B{Index exists for this file format?}
+    B -->|Yes| C{Compatible with current file?}
+    B -->|No| D[Generate record boundaries]
+    C -->|Yes| E[Reuse existing index]
+    C -->|No| D
+    D --> F[Save index]
+    F --> G[Spark reads partitions]
+    E --> G
+    G --> H[Process records]
+
+
+```
+
 ## Compatibility
 
 - Scala: 2.12.15
@@ -68,3 +86,6 @@ spark = (
   because the supplied Python implementation did not include it in `allowed_statuses`.
 - `readRecords` returns a Java list for easy Py4J access, so it loads the file's
   records into JVM memory. It is suitable for initial testing, not huge production files.
+
+
+
