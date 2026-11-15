@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+
+# """
+# Script: $.py
+
+# Description:
+#     Generates a synthetic Micro Focus-style binary test file
+#     using the EcoPass 2-byte record header format.
+
+# Author:
+#     jane
+
+# Maintained by:
+#     jane
+# """
+
 set -euo pipefail
 
 
@@ -21,7 +36,8 @@ echo "=== Test JAR with spark-submit ==="
 
 "$SPARK_HOME/bin/spark-submit" \
     --master local[*] \
-    --jars "ecopass_2.12-0.1.0.jar" \
-    ./example/test_reader.py
+    --jars "$(realpath target/scala-2.12/ecopass_2.12-0.1.0.jar)" \
+    ./example/native_test.py
+    # ./example/generate_index.py
 
 echo "=== Test completed ==="

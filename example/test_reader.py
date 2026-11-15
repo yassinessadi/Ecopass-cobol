@@ -1,4 +1,16 @@
+# """
+# Script: $.py
 
+# Description:
+#     Generates a synthetic Micro Focus-style binary test file
+#     using the EcoPass 2-byte record header format.
+
+# Author:
+#     e7
+
+# Maintained by:
+#     e7
+# """
 from pyspark.sql import SparkSession
 
 INPUT_FILE = "example/sample.dat"
